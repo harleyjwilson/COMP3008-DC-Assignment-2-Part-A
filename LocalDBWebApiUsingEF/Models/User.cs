@@ -10,6 +10,7 @@
         public int Age { get; set; }
         //public string? picture { get; set; }
         public string? Password { get; set; }
-
+        // Navigation Property for BankAccounts
+        public virtual ICollection<BankAccount> BankAccounts { get; set; } = new List<BankAccount>();
     }
 }

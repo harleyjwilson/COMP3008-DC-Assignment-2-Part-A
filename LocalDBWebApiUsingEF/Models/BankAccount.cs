@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace LocalDBWebApiUsingEF.Models
 {
@@ -12,7 +13,7 @@ namespace LocalDBWebApiUsingEF.Models
         public int UserId { get; set; }
 
         // Navigation Property to User (optional but recommended for EF operations)
-
+        [JsonIgnore]
         public virtual User? User { get; set; }
     }
 }

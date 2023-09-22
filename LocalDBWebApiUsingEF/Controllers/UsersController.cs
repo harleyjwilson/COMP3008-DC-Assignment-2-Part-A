@@ -26,42 +26,50 @@ namespace LocalDBWebApiUsingEF.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-          if (_context.Users == null)
-          {
-              return NotFound();
-          }
             return await _context.Users.ToListAsync();
         }
 
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        // POST: api/Users
+        [HttpPost]
+        public async Task<ActionResult<User>> CreateUser(User user)
         {
-          if (_context.Users == null)
-          {
-              return NotFound();
-          }
-            var user = await _context.Users.FindAsync(id);
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetUserByEmail), new { email = user.Email }, user);
+        }
 
+        // GET: api/Users/{email}
+        [HttpGet("{email}")]
+        public async Task<ActionResult<User>> GetUserByEmail(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null)
             {
                 return NotFound();
             }
-
             return user;
         }
 
-        // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // PUT: api/Users/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> UpdateUserProfile(int id, User updatedUser)
         {
-            if (id != user.Id)
+            var existingUser = await _context.Users.FindAsync(id);
+            if (existingUser == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            // Update properties
+            existingUser.Name = updatedUser.Name;
+            existingUser.Email = updatedUser.Email;
+            existingUser.Address = updatedUser.Address;
+            existingUser.Phone = updatedUser.Phone;
+            existingUser.Age = updatedUser.Age;
+            existingUser.Password = updatedUser.Password;  // Be careful with this!
+                                                           // ... (update other properties as needed)
+
+            _context.Entry(existingUser).State = EntityState.Modified;
 
             try
             {
@@ -69,7 +77,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!_context.Users.Any(e => e.Id == id))
                 {
                     return NotFound();
                 }
@@ -82,44 +90,20 @@ namespace LocalDBWebApiUsingEF.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-          if (_context.Users == null)
-          {
-              return Problem("Entity set 'DBManager.Users'  is null.");
-          }
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
-        }
-
-        // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        // DELETE: api/Users/{email}
+        [HttpDelete("{email}")]
+        public async Task<IActionResult> DeleteUser(string email)
         {
-            if (_context.Users == null)
-            {
-                return NotFound();
-            }
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null)
             {
                 return NotFound();
             }
-
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
-
-        private bool UserExists(int id)
-        {
-            return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
     }
+
 }

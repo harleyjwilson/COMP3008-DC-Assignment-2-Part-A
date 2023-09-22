@@ -23,7 +23,6 @@ namespace LocalDBWebApiUsingEF.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AccountHolderName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Balance")
@@ -126,12 +125,17 @@ namespace LocalDBWebApiUsingEF.Migrations
             modelBuilder.Entity("LocalDBWebApiUsingEF.Models.BankAccount", b =>
                 {
                     b.HasOne("LocalDBWebApiUsingEF.Models.User", "User")
-                        .WithMany()
+                        .WithMany("BankAccounts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LocalDBWebApiUsingEF.Models.User", b =>
+                {
+                    b.Navigation("BankAccounts");
                 });
 #pragma warning restore 612, 618
         }
