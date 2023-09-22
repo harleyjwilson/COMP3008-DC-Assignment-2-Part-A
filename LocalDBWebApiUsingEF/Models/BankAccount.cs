@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace LocalDBWebApiUsingEF.Models
 {
     public class BankAccount
     {
+
         public int AccountNumber { get; set; }
         public string? AccountHolderName { get; set; }
         public double Balance { get; set; }

@@ -65,9 +65,8 @@ namespace LocalDBWebApiUsingEF.Controllers
             existingUser.Email = updatedUser.Email;
             existingUser.Address = updatedUser.Address;
             existingUser.Phone = updatedUser.Phone;
-            existingUser.Age = updatedUser.Age;
-            existingUser.Password = updatedUser.Password;  // Be careful with this!
-                                                           // ... (update other properties as needed)
+            existingUser.Password = updatedUser.Password;
+            existingUser.Picture = updatedUser.Picture;
 
             _context.Entry(existingUser).State = EntityState.Modified;
 

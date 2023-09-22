@@ -26,8 +26,8 @@ namespace LocalDBWebApiUsingEF.Data
                     Email = "email1@gmail.com",
                     Address = "Bently",
                     Phone = "111-111-1111",
-                    Age = 20,
-                    Password = "mypassword1"
+                    Password = "mypassword1",
+                    Picture = "/images/man1.jpeg"
                 },
                 new User
                 {
@@ -36,8 +36,8 @@ namespace LocalDBWebApiUsingEF.Data
                     Email = "email2@gmail.com",
                     Address = "Victoria Park",
                     Phone = "222-222-2222",
-                    Age = 30,
-                    Password = "mypassword2"
+                    Password = "mypassword",
+                    Picture = "/images/man2.jpeg"
                 },
                 new User
                 {
@@ -46,8 +46,8 @@ namespace LocalDBWebApiUsingEF.Data
                     Email = "email3@gmail.com",
                     Address = "Northbridge",
                     Phone = "333-333-3333",
-                    Age = 40,
-                    Password = "mypassword3"
+                    Password = "mypassword3",
+                    Picture = "/images/women1.jpeg"
                 }
             };
             modelBuilder.Entity<User>().HasData(users);
