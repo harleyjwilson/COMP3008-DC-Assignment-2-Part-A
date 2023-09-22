@@ -84,8 +84,10 @@ namespace LocalDBWebApiUsingEF.Data
             // Configure the relationship
             modelBuilder.Entity<BankAccount>()
                 .HasOne(b => b.User)
-                .WithMany()
-                .HasForeignKey(b => b.UserId);
+                .WithMany() // Indicates that a user can have multiple bank accounts
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.Cascade)  // If a user is deleted, their bank accounts are deleted as well
+                .IsRequired(true);  // UserId is required, but User navigation property is not
 
             modelBuilder.Entity<BankAccount>().HasData(bankAccounts);
 
