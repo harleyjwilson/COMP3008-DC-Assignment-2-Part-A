@@ -50,6 +50,27 @@ namespace LocalDBWebApiUsingEF.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    TransactionId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    Amount = table.Column<double>(type: "REAL", nullable: false),
+                    BankAccountAccountNumber = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.TransactionId);
+                    table.ForeignKey(
+                        name: "FK_Transactions_BankAccounts_BankAccountAccountNumber",
+                        column: x => x.BankAccountAccountNumber,
+                        principalTable: "BankAccounts",
+                        principalColumn: "AccountNumber",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Username", "Address", "Email", "Name", "Password", "Phone", "Picture" },
@@ -74,11 +95,19 @@ namespace LocalDBWebApiUsingEF.Migrations
                 name: "IX_BankAccounts_UserUsername",
                 table: "BankAccounts",
                 column: "UserUsername");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_BankAccountAccountNumber",
+                table: "Transactions",
+                column: "BankAccountAccountNumber");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Transactions");
+
             migrationBuilder.DropTable(
                 name: "BankAccounts");
 
