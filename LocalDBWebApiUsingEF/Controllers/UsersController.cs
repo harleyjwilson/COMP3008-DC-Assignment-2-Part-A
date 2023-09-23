@@ -33,9 +33,16 @@ namespace LocalDBWebApiUsingEF.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> CreateUser(User user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetUserByEmail), new { email = user.Email }, user);
+            try
+            {
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetUserByEmail), new { email = user.Email }, user);
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest("User already exists with this username.");
+            }
         }
 
         // GET: api/Users/{entry}
@@ -48,7 +55,7 @@ namespace LocalDBWebApiUsingEF.Controllers
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == entry);
                 if (user == null)
                 {
-                    return NotFound();
+                    return NotFound("User not found.");
                 }
                 return user;
             }
@@ -58,7 +65,7 @@ namespace LocalDBWebApiUsingEF.Controllers
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == entry);
                 if (user == null)
                 {
-                    return NotFound();
+                    return NotFound("User not found.");
                 }
                 return user;
             }
@@ -71,7 +78,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             var existingUser = await _context.Users.FindAsync(username);
             if (existingUser == null)
             {
-                return NotFound();
+                return NotFound("User not found.");
             }
 
             // Update properties
@@ -92,7 +99,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             {
                 if (!_context.Users.Any(e => e.Username == username))
                 {
-                    return NotFound();
+                    return NotFound("User not found.");
                 }
                 else
                 {
@@ -111,7 +118,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (user == null)
             {
-                return NotFound();
+                return NotFound("User not found.");
             }
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
