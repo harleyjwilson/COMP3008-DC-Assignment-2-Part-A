@@ -38,23 +38,37 @@ namespace LocalDBWebApiUsingEF.Controllers
             return CreatedAtAction(nameof(GetUserByEmail), new { email = user.Email }, user);
         }
 
-        // GET: api/Users/{email}
-        [HttpGet("{email}")]
-        public async Task<ActionResult<User>> GetUserByEmail(string email)
+        // GET: api/Users/{entry}
+        [HttpGet("{entry}")]
+        public async Task<ActionResult<User>> GetUserByEmail(string entry)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null)
+            // If user searches via email
+            if (entry.Contains("@"))
             {
-                return NotFound();
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == entry);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return user;
             }
-            return user;
+            // If user searches by username
+            else
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == entry);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return user;
+            }
         }
 
-        // PUT: api/Users/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUserProfile(int id, User updatedUser)
+        // PUT: api/Users/{username}
+        [HttpPut("{username}")]
+        public async Task<IActionResult> UpdateUserProfile(string username, User updatedUser)
         {
-            var existingUser = await _context.Users.FindAsync(id);
+            var existingUser = await _context.Users.FindAsync(username);
             if (existingUser == null)
             {
                 return NotFound();
@@ -76,7 +90,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.Users.Any(e => e.Id == id))
+                if (!_context.Users.Any(e => e.Username == username))
                 {
                     return NotFound();
                 }
@@ -90,11 +104,11 @@ namespace LocalDBWebApiUsingEF.Controllers
         }
 
 
-        // DELETE: api/Users/{email}
-        [HttpDelete("{email}")]
-        public async Task<IActionResult> DeleteUser(string email)
+        // DELETE: api/Users/{username}
+        [HttpDelete("{username}")]
+        public async Task<IActionResult> DeleteUser(string username)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (user == null)
             {
                 return NotFound();
