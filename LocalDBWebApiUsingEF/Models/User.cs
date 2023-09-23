@@ -2,7 +2,12 @@
 {
     public class User
     {
-        public int Id { get; set; }
+        public User(string? Username)
+        {
+            this.Username = Username!;
+        }
+
+        public string Username { get; set; }
         public string? Name { get; set; }
         public string? Email { get; set; }
         public string? Address { get; set; }

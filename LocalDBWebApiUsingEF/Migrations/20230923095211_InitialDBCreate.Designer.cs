@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LocalDBWebApiUsingEF.Migrations
 {
     [DbContext(typeof(DBManager))]
-    [Migration("20230922041957_UpdateAgain")]
-    partial class UpdateAgain
+    [Migration("20230923095211_InitialDBCreate")]
+    partial class InitialDBCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,18 +26,18 @@ namespace LocalDBWebApiUsingEF.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AccountHolderName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Balance")
                         .HasColumnType("REAL");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserUsername")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("AccountNumber");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserUsername");
 
                     b.ToTable("BankAccounts");
 
@@ -47,35 +47,31 @@ namespace LocalDBWebApiUsingEF.Migrations
                             AccountNumber = 10001,
                             AccountHolderName = "Sajib's Account",
                             Balance = 5000.5,
-                            UserId = 1
+                            UserUsername = "sajib"
                         },
                         new
                         {
                             AccountNumber = 10002,
                             AccountHolderName = "Mistry's Account",
                             Balance = 2500.75,
-                            UserId = 2
+                            UserUsername = "mistry"
                         },
                         new
                         {
                             AccountNumber = 10003,
                             AccountHolderName = "Mike's Account",
                             Balance = 12000.0,
-                            UserId = 3
+                            UserUsername = "mike"
                         });
                 });
 
             modelBuilder.Entity("LocalDBWebApiUsingEF.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Username")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Address")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Age")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
@@ -89,52 +85,60 @@ namespace LocalDBWebApiUsingEF.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Picture")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Username");
 
                     b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Username = "sajib",
                             Address = "Bently",
-                            Age = 20,
                             Email = "email1@gmail.com",
                             Name = "Sajib",
                             Password = "mypassword1",
-                            Phone = "111-111-1111"
+                            Phone = "111-111-1111",
+                            Picture = "/images/man1.jpeg"
                         },
                         new
                         {
-                            Id = 2,
+                            Username = "mistry",
                             Address = "Victoria Park",
-                            Age = 30,
                             Email = "email2@gmail.com",
                             Name = "Mistry",
-                            Password = "mypassword2",
-                            Phone = "222-222-2222"
+                            Password = "mypassword",
+                            Phone = "222-222-2222",
+                            Picture = "/images/man2.jpeg"
                         },
                         new
                         {
-                            Id = 3,
+                            Username = "mike",
                             Address = "Northbridge",
-                            Age = 40,
                             Email = "email3@gmail.com",
                             Name = "Mike",
                             Password = "mypassword3",
-                            Phone = "333-333-3333"
+                            Phone = "333-333-3333",
+                            Picture = "/images/women1.jpeg"
                         });
                 });
 
             modelBuilder.Entity("LocalDBWebApiUsingEF.Models.BankAccount", b =>
                 {
                     b.HasOne("LocalDBWebApiUsingEF.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithMany("BankAccounts")
+                        .HasForeignKey("UserUsername")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LocalDBWebApiUsingEF.Models.User", b =>
+                {
+                    b.Navigation("BankAccounts");
                 });
 #pragma warning restore 612, 618
         }
