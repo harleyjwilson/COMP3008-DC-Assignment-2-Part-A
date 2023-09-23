@@ -20,7 +20,10 @@ namespace LocalDBWebApiUsingEF.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BankAccount>>> GetAllBankAccounts()
         {
-            return await _context.BankAccounts.Include(b => b.User).ToListAsync();
+            return await _context.BankAccounts
+                    .Include(b => b.User)
+                    .Include(b => b.Transactions)
+                    .ToListAsync();
 
         }
 
@@ -39,6 +42,7 @@ namespace LocalDBWebApiUsingEF.Controllers
         {
             var account = await _context.BankAccounts
                             .Include(b => b.User)
+                            .Include(b => b.Transactions)
                             .FirstOrDefaultAsync(b => b.AccountNumber == accountNumber);
 
             if (account == null)
