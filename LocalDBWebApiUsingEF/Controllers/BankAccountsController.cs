@@ -24,16 +24,22 @@ namespace LocalDBWebApiUsingEF.Controllers
                     .Include(b => b.User)
                     .Include(b => b.Transactions)
                     .ToListAsync();
-
         }
 
         // POST: api/BankAccounts
         [HttpPost]
         public async Task<ActionResult<BankAccount>> CreateBankAccount(BankAccount account)
         {
-            _context.BankAccounts.Add(account);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetBankAccount), new { id = account.AccountNumber }, account);
+            try
+            {
+                _context.BankAccounts.Add(account);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetBankAccount), new { id = account.AccountNumber }, account);
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest("Bank account already exists with this bank account number.");
+            }
         }
 
         // GET: api/BankAccounts/12345
@@ -47,7 +53,7 @@ namespace LocalDBWebApiUsingEF.Controllers
 
             if (account == null)
             {
-                return NotFound();
+                return NotFound("Bank account not found.");
             }
             return account;
         }
@@ -58,7 +64,7 @@ namespace LocalDBWebApiUsingEF.Controllers
         {
             if (accountNumber != account.AccountNumber)
             {
-                return BadRequest();
+                return BadRequest("Bank account numbers do not match.");
             }
             _context.Entry(account).State = EntityState.Modified;
             try
@@ -69,7 +75,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             {
                 if (!_context.BankAccounts.Any(e => e.AccountNumber == accountNumber))
                 {
-                    return NotFound();
+                    return NotFound("Bank account not found.");
                 }
                 else
                 {
@@ -86,7 +92,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             var account = await _context.BankAccounts.FindAsync(accountNumber);
             if (account == null)
             {
-                return NotFound();
+                return NotFound("Bank account not found.");
             }
             _context.BankAccounts.Remove(account);
             await _context.SaveChangesAsync();
