@@ -8,11 +8,12 @@ namespace LocalDBWebApiUsingEF.Data
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(@"Data Source = Users.db;");
+            optionsBuilder.UseSqlite(@"Data Source = BankDB.db;");
         }
 
         public DbSet<User> Users { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -77,6 +78,14 @@ namespace LocalDBWebApiUsingEF.Data
                     // UserUsername = "mike"   // Reference to Mike's User Id
                 }
             };
+
+            // Transaction Seed Data
+            List<Transaction> transactions = new List<Transaction>
+            {
+                new Transaction(10001, 200.20),
+                new Transaction(10002, 694.70)
+            };
+
             // Set AccountNumber as the primary key for User
             modelBuilder.Entity<User>()
                 .HasKey(b => b.Username);
@@ -85,15 +94,29 @@ namespace LocalDBWebApiUsingEF.Data
             modelBuilder.Entity<BankAccount>()
                 .HasKey(b => b.AccountNumber);
 
-            // Configure the relationship
+            // Set Transaction primary key
+            modelBuilder.Entity<Transaction>()
+                  .HasKey(t => t.TransactionId);
+
+            // Set Transaction primary key to autoincrement
+            modelBuilder.Entity<Transaction>()
+                .Property(t => t.TransactionId)
+                .ValueGeneratedOnAdd();
+
+            // Configure the relationship between BankAccount and User
             modelBuilder.Entity<BankAccount>()
                 .HasOne(b => b.User)
                 .WithMany(u => u.BankAccounts)  // Indicates that a user can have multiple bank accounts
                 .HasForeignKey(b => b.UserUsername)
                 .OnDelete(DeleteBehavior.Cascade)  // If a user is deleted, their bank accounts are deleted as well
                 .IsRequired(true);  // UserId is required, but User navigation property is not
-            modelBuilder.Entity<BankAccount>().HasData(bankAccounts);
 
+            // Configure the relationship between BankAccount and Transaction
+            modelBuilder.Entity<BankAccount>()
+                .HasMany(b => b.Transactions)
+                .WithOne(t => t.BankAccount)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<BankAccount>().HasData(bankAccounts);
         }
     }
 }
