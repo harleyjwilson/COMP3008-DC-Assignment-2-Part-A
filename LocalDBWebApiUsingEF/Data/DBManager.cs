@@ -22,7 +22,6 @@ namespace LocalDBWebApiUsingEF.Data
             {
                 new User("sajib")
                 {
-                    // Username = "sajib",
                     Name = "Sajib",
                     Email = "email1@gmail.com",
                     Address = "Bently",
@@ -32,7 +31,6 @@ namespace LocalDBWebApiUsingEF.Data
                 },
                 new User("mistry")
                 {
-                    // Username = "mistry",
                     Name = "Mistry",
                     Email = "email2@gmail.com",
                     Address = "Victoria Park",
@@ -42,7 +40,6 @@ namespace LocalDBWebApiUsingEF.Data
                 },
                 new User("mike")
                 {
-                    // Username = "mike",
                     Name = "Mike",
                     Email = "email3@gmail.com",
                     Address = "Northbridge",
@@ -58,24 +55,18 @@ namespace LocalDBWebApiUsingEF.Data
             {
                 new BankAccount(10001, "sajib")
                 {
-                    // AccountNumber = 10001,
                     AccountHolderName = "Sajib's Account",
                     Balance = 5000.50
-                    // UserUsername = "sajib"  // Reference to Sajib's User Id
                 },
                 new BankAccount(10002, "mistry")
                 {
-                    // AccountNumber = 10002,
                     AccountHolderName = "Mistry's Account",
                     Balance = 2500.75
-                    // UserUsername = "mistry"   // Reference to Mistry's User Id
                 },
                 new BankAccount(10003, "mike")
                 {
-                    // AccountNumber = 10003,
                     AccountHolderName = "Mike's Account",
                     Balance = 12000.00
-                    // UserUsername = "mike"   // Reference to Mike's User Id
                 }
             };
 

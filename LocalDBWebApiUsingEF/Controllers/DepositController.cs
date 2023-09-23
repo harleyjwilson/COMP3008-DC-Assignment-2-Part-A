@@ -44,10 +44,6 @@ namespace LocalDBWebApiUsingEF.Controllers
                 }
             }
             return NoContent();
-
-            // _context.BankAccounts.Add(account);
-            // await _context.SaveChangesAsync();
-            // return CreatedAtAction(nameof(GetBankAccount), new { id = account.AccountNumber }, account);
         }
     }
 }
