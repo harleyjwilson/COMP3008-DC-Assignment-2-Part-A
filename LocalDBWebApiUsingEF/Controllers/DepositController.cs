@@ -23,7 +23,11 @@ namespace LocalDBWebApiUsingEF.Controllers
                                      .FirstOrDefaultAsync(b => b.AccountNumber == transact.AccountNumber);
             if (account == null)
             {
-                return NotFound();
+                return NotFound("Bank account not found.");
+            }
+            if (transact.Amount == 0.0)
+            {
+                return BadRequest("Invalid amount - Can't deposit 0.0");
             }
             account.Balance = account.Balance + transact.Amount;
             account.Transactions.Add(transact);
@@ -36,7 +40,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             {
                 if (!_context.BankAccounts.Any(e => e.AccountNumber == transact.AccountNumber))
                 {
-                    return NotFound();
+                    return NotFound("Bank account not found. ");
                 }
                 else
                 {
