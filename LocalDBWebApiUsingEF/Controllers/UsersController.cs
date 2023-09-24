@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LocalDBWebApiUsingEF.Data;
 using LocalDBWebApiUsingEF.Models;
+using System.Text.RegularExpressions;
+using MessagePack;
 
 
 namespace LocalDBWebApiUsingEF.Controllers
@@ -33,6 +35,10 @@ namespace LocalDBWebApiUsingEF.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> CreateUser(User user)
         {
+            if (!ValidUser(user))
+            {
+                return BadRequest("Invalid user details provided.");
+            }
             try
             {
                 _context.Users.Add(user);
@@ -49,6 +55,10 @@ namespace LocalDBWebApiUsingEF.Controllers
         [HttpGet("{entry}")]
         public async Task<ActionResult<User>> GetUserByEmail(string entry)
         {
+            if (!ValidUsername(entry) && !ValidEmail(entry))
+            {
+                return BadRequest("Invalid user details provided.");
+            }
             // If user searches via email
             if (entry.Contains("@"))
             {
@@ -75,6 +85,10 @@ namespace LocalDBWebApiUsingEF.Controllers
         [HttpPut("{username}")]
         public async Task<IActionResult> UpdateUserProfile(string username, User updatedUser)
         {
+            if (!ValidUsername(username) || !ValidUser(updatedUser))
+            {
+                return BadRequest("Invalid user details provided.");
+            }
             var existingUser = await _context.Users.FindAsync(username);
             if (existingUser == null)
             {
@@ -115,6 +129,10 @@ namespace LocalDBWebApiUsingEF.Controllers
         [HttpDelete("{username}")]
         public async Task<IActionResult> DeleteUser(string username)
         {
+            if (!ValidUsername(username))
+            {
+                return BadRequest("Invalid user details provided.");
+            }
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (user == null)
             {
@@ -123,6 +141,31 @@ namespace LocalDBWebApiUsingEF.Controllers
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return NoContent();
+        }
+
+        private static bool ValidUser(User user)
+        {
+            if (!ValidUsername(user.Username))
+            {
+                return false;
+            }
+            if (user.Email != null && !ValidEmail(user.Email))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ValidUsername(string username)
+        {
+            string pattern = @"^[a-zA-Z0-9]+$";
+            return Regex.IsMatch(username, pattern);
+        }
+
+        private static bool ValidEmail(string email)
+        {
+            string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            return Regex.IsMatch(email, pattern);
         }
     }
 
