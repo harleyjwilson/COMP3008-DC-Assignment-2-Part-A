@@ -30,6 +30,10 @@ namespace LocalDBWebApiUsingEF.Controllers
         [HttpPost]
         public async Task<ActionResult<BankAccount>> CreateBankAccount(BankAccount account)
         {
+            if (!UsersController.ValidUsername(account.UserUsername))
+            {
+                return BadRequest("Invalid bank account user details entered.");
+            }
             try
             {
                 _context.BankAccounts.Add(account);
@@ -65,6 +69,10 @@ namespace LocalDBWebApiUsingEF.Controllers
             if (accountNumber != account.AccountNumber)
             {
                 return BadRequest("Bank account numbers do not match.");
+            }
+            if (!UsersController.ValidUsername(account.UserUsername))
+            {
+                return BadRequest("Invalid bank account user details entered.");
             }
             _context.Entry(account).State = EntityState.Modified;
             try

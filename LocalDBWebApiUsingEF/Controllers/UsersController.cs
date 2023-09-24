@@ -156,7 +156,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             return true;
         }
 
-        private static bool ValidUsername(string username)
+        public static bool ValidUsername(string username)
         {
             string pattern = @"^[a-zA-Z0-9]+$";
             return Regex.IsMatch(username, pattern);
