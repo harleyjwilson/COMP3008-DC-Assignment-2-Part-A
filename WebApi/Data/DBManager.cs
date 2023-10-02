@@ -45,7 +45,8 @@ namespace LocalDBWebApiUsingEF.Data
                     Address = "Northbridge",
                     Phone = "333-333-3333",
                     Password = "mypassword3",
-                    Picture = "/resources/images/women1.jpeg"
+                    Picture = "/resources/images/women1.jpeg",
+                    SessionID = "3Jxh7KlN8ZbA2GfWYs9RmP1oXsDlTz6Q"
                 }
             };
             modelBuilder.Entity<User>().HasData(users);
