@@ -12,6 +12,7 @@ namespace LocalDBWebApiUsingEF.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Admin> Admins { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
@@ -51,6 +52,21 @@ namespace LocalDBWebApiUsingEF.Data
             };
             modelBuilder.Entity<User>().HasData(users);
 
+            // AdminUser Seed Data
+            List<Admin> admin = new List<Admin>
+            {
+                new Admin("admin")
+                {
+                    Name = "Admin User",
+                    Email = "email0@gmail.com",
+                    Address = "Sydney",
+                    Phone = "000-000-0000",
+                    Password = "adminpassword",
+                    Picture = "/resources/images/man1.jpeg"
+                }
+            };
+            modelBuilder.Entity<Admin>().HasData(admin);
+
             // BankAccount Seed Data
             List<BankAccount> bankAccounts = new List<BankAccount>
             {
@@ -78,9 +94,13 @@ namespace LocalDBWebApiUsingEF.Data
                 new Transaction(10002, 694.70)
             };
 
-            // Set AccountNumber as the primary key for User
+            // Set Username as the primary key for User
             modelBuilder.Entity<User>()
                 .HasKey(b => b.Username);
+
+            // Set Username as the primary key for AdminUser
+            modelBuilder.Entity<Admin>()
+                .HasKey(a => a.Username);
 
             // Set AccountNumber as the primary key for BankAccount
             modelBuilder.Entity<BankAccount>()
