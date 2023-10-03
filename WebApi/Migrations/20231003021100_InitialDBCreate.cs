@@ -13,6 +13,24 @@ namespace WebApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Admins",
+                columns: table => new
+                {
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Email = table.Column<string>(type: "TEXT", nullable: true),
+                    Address = table.Column<string>(type: "TEXT", nullable: true),
+                    Phone = table.Column<string>(type: "TEXT", nullable: true),
+                    Picture = table.Column<string>(type: "TEXT", nullable: true),
+                    Password = table.Column<string>(type: "TEXT", nullable: true),
+                    SessionID = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Admins", x => x.Username);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -73,6 +91,11 @@ namespace WebApi.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Admins",
+                columns: new[] { "Username", "Address", "Email", "Name", "Password", "Phone", "Picture", "SessionID" },
+                values: new object[] { "admin", "Sydney", "email0@gmail.com", "Admin User", "adminpassword", "000-000-0000", "/resources/images/man1.jpeg", null });
+
+            migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Username", "Address", "Email", "Name", "Password", "Phone", "Picture", "SessionID" },
                 values: new object[,]
@@ -106,6 +129,9 @@ namespace WebApi.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Admins");
+
             migrationBuilder.DropTable(
                 name: "Transactions");
 

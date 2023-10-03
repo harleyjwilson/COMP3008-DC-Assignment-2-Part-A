@@ -15,25 +15,25 @@ namespace LocalDBWebApiUsingEF.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AdminController : ControllerBase
+    public class AdminsController : ControllerBase
     {
         private readonly DBManager _context;
 
-        public UsersController(DBManager context)
+        public AdminsController(DBManager context)
         {
             _context = context;
         }
 
         // GET: api/Admin
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AdminUser>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<Admin>>> GetAdmins()
         {
-            return await _context.AdminUsers.ToListAsync();
+            return await _context.Admins.ToListAsync();
         }
 
         // POST: api/Admin
         [HttpPost]
-        public async Task<ActionResult<AdminUser>> CreateUser(AdminUser user)
+        public async Task<ActionResult<Admin>> CreateAdmin(Admin user)
         {
             if (!ValidUser(user))
             {
@@ -41,9 +41,9 @@ namespace LocalDBWebApiUsingEF.Controllers
             }
             try
             {
-                _context.AdminUsers.Add(user);
+                _context.Admins.Add(user);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(GetUserByEmail), new { email = user.Email }, user);
+                return CreatedAtAction(nameof(GetAdminByEmail), new { email = user.Email }, user);
             }
             catch (DbUpdateException)
             {
@@ -53,7 +53,7 @@ namespace LocalDBWebApiUsingEF.Controllers
 
         // GET: api/Admin/{entry}
         [HttpGet("{entry}")]
-        public async Task<ActionResult<AdminUser>> GetUserByEmail(string entry)
+        public async Task<ActionResult<Admin>> GetAdminByEmail(string entry)
         {
             if (!ValidUsername(entry) && !ValidEmail(entry))
             {
@@ -62,7 +62,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             // If user searches via email
             if (entry.Contains("@"))
             {
-                var user = await _context.AdminUsers.FirstOrDefaultAsync(u => u.Email == entry);
+                var user = await _context.Admins.FirstOrDefaultAsync(u => u.Email == entry);
                 if (user == null)
                 {
                     return NotFound("User not found.");
@@ -72,7 +72,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             // If user searches by username
             else
             {
-                var user = await _context.AdminUsers.FirstOrDefaultAsync(u => u.Username == entry);
+                var user = await _context.Admins.FirstOrDefaultAsync(u => u.Username == entry);
                 if (user == null)
                 {
                     return NotFound("User not found.");
@@ -83,13 +83,13 @@ namespace LocalDBWebApiUsingEF.Controllers
 
         // PUT: api/Admin/{username}
         [HttpPut("{username}")]
-        public async Task<IActionResult> UpdateUserProfile(string username, AdminUser updatedUser)
+        public async Task<IActionResult> UpdateAdminProfile(string username, Admin updatedUser)
         {
             if (!ValidUsername(username) || !ValidUser(updatedUser))
             {
                 return BadRequest("Invalid user details provided.");
             }
-            var existingUser = await _context.AdminUsers.FindAsync(username);
+            var existingUser = await _context.Admins.FindAsync(username);
             if (existingUser == null)
             {
                 return NotFound("User not found.");
@@ -112,7 +112,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.AdminUsers.Any(e => e.Username == username))
+                if (!_context.Admins.Any(e => e.Username == username))
                 {
                     return NotFound("User not found.");
                 }
@@ -128,23 +128,23 @@ namespace LocalDBWebApiUsingEF.Controllers
 
         // DELETE: api/Admin/{username}
         [HttpDelete("{username}")]
-        public async Task<IActionResult> DeleteUser(string username)
+        public async Task<IActionResult> DeleteAdmin(string username)
         {
             if (!ValidUsername(username))
             {
                 return BadRequest("Invalid user details provided.");
             }
-            var user = await _context.AdminUsers.FirstOrDefaultAsync(u => u.Username == username);
+            var user = await _context.Admins.FirstOrDefaultAsync(u => u.Username == username);
             if (user == null)
             {
                 return NotFound("User not found.");
             }
-            _context.AdminUsers.Remove(user);
+            _context.Admins.Remove(user);
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        private static bool ValidUser(AdminUser user)
+        private static bool ValidUser(Admin user)
         {
             if (!ValidUsername(user.Username))
             {
