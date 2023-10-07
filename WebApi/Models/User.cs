@@ -1,9 +1,6 @@
-﻿namespace LocalDBWebApiUsingEF.Models
-{
-    public class User
-    {
-        public User(string? Username)
-        {
+﻿namespace LocalDBWebApiUsingEF.Models {
+    public class User {
+        public User(string? Username) {
             this.Username = Username!;
         }
 
@@ -12,7 +9,7 @@
         public string? Email { get; set; }
         public string? Address { get; set; }
         public string? Phone { get; set; }
-        public string? Picture { get; set; }
+        public byte[]? Picture { get; set; }
         public string? Password { get; set; }
         public string? SessionID { get; set; }
         // Navigation Property for BankAccounts
