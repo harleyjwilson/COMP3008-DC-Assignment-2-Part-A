@@ -3,47 +3,36 @@ using LocalDBWebApiUsingEF.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace LocalDBWebApiUsingEF.Controllers
-{
+namespace LocalDBWebApiUsingEF.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class DepositController : ControllerBase
-    {
+    public class DepositController : ControllerBase {
         private readonly DBManager _context;
 
-        public DepositController(DBManager context)
-        {
+        public DepositController(DBManager context) {
             _context = context;
         }
         // POST: api/deposit
         [HttpPost]
-        public async Task<ActionResult<BankAccount>> ProcessDeposit(Transaction transact)
-        {
+        public async Task<ActionResult<BankAccount>> ProcessDeposit(Transaction transact) {
             var account = await _context.BankAccounts
                                      .FirstOrDefaultAsync(b => b.AccountNumber == transact.AccountNumber);
-            if (account == null)
-            {
+            if (account == null) {
                 return NotFound("Bank account not found.");
             }
-            if (transact.Amount == 0.0)
-            {
+            if (transact.Amount == 0.0) {
                 return BadRequest("Invalid amount - Can't deposit 0.0");
             }
             account.Balance = account.Balance + transact.Amount;
             account.Transactions.Add(transact);
             _context.Entry(account).State = EntityState.Modified;
-            try
-            {
+            try {
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.BankAccounts.Any(e => e.AccountNumber == transact.AccountNumber))
-                {
+            } catch (DbUpdateConcurrencyException) {
+                if (!_context.BankAccounts.Any(e => e.AccountNumber == transact.AccountNumber)) {
                     return NotFound("Bank account not found. ");
                 }
-                else
-                {
+                else {
                     throw;
                 }
             }
