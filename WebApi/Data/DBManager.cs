@@ -55,7 +55,7 @@ namespace LocalDBWebApiUsingEF.Data {
                                            // Randomly pick a sender account
                 BankAccount senderAccount = bankAccounts[random.Next(bankAccounts.Count)];
 
-                // Randomly pick a receiver account. Ensure it's not the same as the sender account.
+                // Randomly pick a receiver account. Ensures it's not the same as sender.
                 BankAccount receiverAccount;
                 do {
                     receiverAccount = bankAccounts[random.Next(bankAccounts.Count)];
@@ -64,7 +64,7 @@ namespace LocalDBWebApiUsingEF.Data {
                 // Generate a random transaction amount that's less than the sender account's balance
                 double transactionAmount = random.NextDouble() * senderAccount.Balance;
 
-                // Create a transaction record for this
+                // Creates transaction record
                 transactions.Add(new Transaction {
                     TransactionId = transactionIdCounter,
                     FromAccountNumber = senderAccount.AccountNumber,
@@ -73,10 +73,10 @@ namespace LocalDBWebApiUsingEF.Data {
                     Description = $"Transfer of {transactionAmount:C} from {senderAccount.AccountNumber} to {receiverAccount.AccountNumber}"
                 });
 
-                // Increment the TransactionId counter
+                // Increments TransactionId
                 transactionIdCounter++;
 
-                // Deduct the amount from sender's account and add to receiver's (if you want this reflected in the seed data)
+                // Deducts amount from senders account and adds it to receiver
                 senderAccount.Balance -= transactionAmount;
                 receiverAccount.Balance += transactionAmount;
             }
