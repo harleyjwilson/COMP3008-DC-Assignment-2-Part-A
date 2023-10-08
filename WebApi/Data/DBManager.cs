@@ -47,9 +47,43 @@ namespace LocalDBWebApiUsingEF.Data {
 
             // Transaction Seed Data
             List<Transaction> transactions = new List<Transaction>();
-            for (int i = 0; i < bankAccounts.Count; i++) { //TODO: add transactions for each bank account
-                transactions.Add(new Transaction(bankAccounts[i].AccountNumber, bankAccounts[i].Balance));
+            Random random = new Random();
+
+            int transactionIdCounter = 1; // Start the counter for TransactionId
+
+            for (int i = 0; i < 15; i++) { //Create 15 transactions
+                                           // Randomly pick a sender account
+                BankAccount senderAccount = bankAccounts[random.Next(bankAccounts.Count)];
+
+                // Randomly pick a receiver account. Ensure it's not the same as the sender account.
+                BankAccount receiverAccount;
+                do {
+                    receiverAccount = bankAccounts[random.Next(bankAccounts.Count)];
+                } while (senderAccount.AccountNumber == receiverAccount.AccountNumber);
+
+                // Generate a random transaction amount that's less than the sender account's balance
+                double transactionAmount = random.NextDouble() * senderAccount.Balance;
+
+                // Create a transaction record for this
+                transactions.Add(new Transaction {
+                    TransactionId = transactionIdCounter,
+                    FromAccountNumber = senderAccount.AccountNumber,
+                    ToAccountNumber = receiverAccount.AccountNumber,
+                    Amount = transactionAmount,
+                    Description = $"Transfer of {transactionAmount:C} from {senderAccount.AccountNumber} to {receiverAccount.AccountNumber}"
+                });
+
+                // Increment the TransactionId counter
+                transactionIdCounter++;
+
+                // Deduct the amount from sender's account and add to receiver's (if you want this reflected in the seed data)
+                senderAccount.Balance -= transactionAmount;
+                receiverAccount.Balance += transactionAmount;
             }
+
+            modelBuilder.Entity<Transaction>().HasData(transactions);
+
+
 
 
             // Set Username as the primary key for User
