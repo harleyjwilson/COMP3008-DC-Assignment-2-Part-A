@@ -16,7 +16,7 @@ namespace LocalDBWebApiUsingEF.Controllers {
         [HttpPost]
         public async Task<ActionResult<BankAccount>> ProcessWithdrawal(Transaction transact) {
             var account = await _context.BankAccounts
-                                     .FirstOrDefaultAsync(b => b.AccountNumber == transact.AccountNumber);
+                                     .FirstOrDefaultAsync(b => b.AccountNumber == transact.FromAccountNumber);
             if (account == null) {
                 return NotFound("Bank account not found.");
             }
@@ -37,7 +37,7 @@ namespace LocalDBWebApiUsingEF.Controllers {
                 try {
                     await _context.SaveChangesAsync();
                 } catch (DbUpdateConcurrencyException) {
-                    if (!_context.BankAccounts.Any(e => e.AccountNumber == transact.AccountNumber)) {
+                    if (!_context.BankAccounts.Any(e => e.AccountNumber == transact.FromAccountNumber)) {
                         return NotFound("Bank account not found.");
                     }
                     else {
@@ -50,5 +50,6 @@ namespace LocalDBWebApiUsingEF.Controllers {
                 return BadRequest("Insufficient funds.");
             }
         }
+
     }
 }
