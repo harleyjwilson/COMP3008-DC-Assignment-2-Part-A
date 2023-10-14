@@ -2,9 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 
-namespace LocalDBWebApiUsingEF.Data {
-    public class DBManager : DbContext {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+namespace LocalDBWebApiUsingEF.Data
+{
+    public class DBManager : DbContext
+    {
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
             optionsBuilder.UseSqlite(@"Data Source = BankDB.db;");
         }
 
@@ -13,7 +16,8 @@ namespace LocalDBWebApiUsingEF.Data {
         public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
             //Get randomly generated users
             List<User> users = FixedSizeUserList.GetInstance().GetUsers();
             modelBuilder.Entity<User>().HasData(users);
@@ -37,8 +41,10 @@ namespace LocalDBWebApiUsingEF.Data {
             List<BankAccount> bankAccounts = new List<BankAccount>();
             // Randomly associate bank accounts with users
             int accountNumber = 10000;
-            for (int i = 0; i < users.Count; i++) { //create a bank account for each user currently
-                bankAccounts.Add(new BankAccount(accountNumber, users[i].Username) {
+            for (int i = 0; i < users.Count; i++)
+            { //create a bank account for each user currently
+                bankAccounts.Add(new BankAccount(accountNumber, users[i].Username)
+                {
                     AccountHolderName = $"{users[i].Name}'s Account",
                     Balance = new Random().NextDouble() * 10000 // random balance between 0 to 10000
                 });
@@ -51,13 +57,15 @@ namespace LocalDBWebApiUsingEF.Data {
 
             int transactionIdCounter = 1; // Start the counter for TransactionId
 
-            for (int i = 0; i < 15; i++) { //Create 15 transactions
-                                           // Randomly pick a sender account
+            for (int i = 0; i < 15; i++)
+            { //Create 15 transactions
+              // Randomly pick a sender account
                 BankAccount senderAccount = bankAccounts[random.Next(bankAccounts.Count)];
 
                 // Randomly pick a receiver account. Ensures it's not the same as sender.
                 BankAccount receiverAccount;
-                do {
+                do
+                {
                     receiverAccount = bankAccounts[random.Next(bankAccounts.Count)];
                 } while (senderAccount.AccountNumber == receiverAccount.AccountNumber);
 
@@ -65,7 +73,8 @@ namespace LocalDBWebApiUsingEF.Data {
                 double transactionAmount = random.NextDouble() * senderAccount.Balance;
 
                 // Creates transaction record
-                transactions.Add(new Transaction {
+                transactions.Add(new Transaction
+                {
                     TransactionId = transactionIdCounter,
                     FromAccountNumber = senderAccount.AccountNumber,
                     ToAccountNumber = receiverAccount.AccountNumber,

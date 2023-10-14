@@ -15,16 +15,14 @@ namespace LocalDBWebApiUsingEF.Models
         public int AccountNumber { get; set; }
         public string? AccountHolderName { get; set; }
         public double Balance { get; set; }
-        // Foreign Key to User
 
+        // Foreign Key to User
         public string UserUsername { get; set; }
 
         // Navigation Property to User (optional but recommended for EF operations)
         [JsonIgnore]
         public virtual User? User { get; set; }
 
-
         public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-
     }
 }

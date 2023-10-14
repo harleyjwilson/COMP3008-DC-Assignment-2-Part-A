@@ -1,7 +1,9 @@
 ﻿using LocalDBWebApiUsingEF.Models;
 
-namespace WebApi.Data {
-    public class FixedSizeUserList {
+namespace WebApi.Data
+{
+    public class FixedSizeUserList
+    {
         private static FixedSizeUserList _instance;
         private static object _lockObject = new object();
 
@@ -11,17 +13,22 @@ namespace WebApi.Data {
 
         private const int NUMBER_OF_ENTRIES = 1_000;
 
-        private FixedSizeUserList(int size) {
+        private FixedSizeUserList(int size)
+        {
             _size = size;
             _users = new List<User>(size);
             _userGenerator = new UserGenerator();
             PopulateUsers();
         }
 
-        public static FixedSizeUserList GetInstance() {
-            if (_instance == null) {
-                lock (_lockObject) {
-                    if (_instance == null) {
+        public static FixedSizeUserList GetInstance()
+        {
+            if (_instance == null)
+            {
+                lock (_lockObject)
+                {
+                    if (_instance == null)
+                    {
                         _instance = new FixedSizeUserList(NUMBER_OF_ENTRIES);
                     }
                 }
@@ -29,8 +36,10 @@ namespace WebApi.Data {
             return _instance;
         }
 
-        private void PopulateUsers() {
-            for (int i = 0; i < _size; i++) {
+        private void PopulateUsers()
+        {
+            for (int i = 0; i < _size; i++)
+            {
                 _userGenerator.GetNextAccount(
                     out string username,
                     out string name,
@@ -40,7 +49,8 @@ namespace WebApi.Data {
                     out byte[] picture,
                     out string password);
 
-                User user = new User(username) {
+                User user = new User(username)
+                {
                     Name = name,
                     Email = email,
                     Address = address,
@@ -53,11 +63,13 @@ namespace WebApi.Data {
             }
         }
 
-        public List<User> GetUsers() {
+        public List<User> GetUsers()
+        {
             return _users;
         }
 
-        public User GetUser(int index) {
+        public User GetUser(int index)
+        {
             return _users[index];
         }
     }
